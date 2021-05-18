@@ -1,0 +1,33 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+jobs:
+  build-and-test:
+    docker: # use the Docker executor
+      - image: circleci/rust
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
+    steps:
+      - checkout
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+      - run:
+          name: Create Lock
+          command: cargo generate-lockfile
+      - run:
+          name: Build all targets
+          command: cargo build
+      - run:
+          name: Run all tests
+          command: cargo test
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - build-and-test:
+          filters:
+            tags:
+              only: /.*/
