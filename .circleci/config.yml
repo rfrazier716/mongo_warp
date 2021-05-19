@@ -15,7 +15,7 @@ jobs:
       - checkout
       - run:
           name: Version information
-          command: rustc --version; cargo --version; rustup --
+          command: rustc --version; cargo --version; rustup --version
 
       - run:
           name: Create Lock
