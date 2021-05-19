@@ -98,6 +98,11 @@ jobs:
             - cargo-audit-{{ arch }}
 
       - run:
+          name: Cache permission
+          command: |
+            sudo chown -R $(whoami):$(id -ng) /usr/local/cargo
+
+      - run:
           name: Install dependency auditing tool
           command: cargo install cargo-audit
 
