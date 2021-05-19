@@ -8,26 +8,126 @@ jobs:
         auth:
           username: rfrazier716
           password: $DOCKER_API_KEY
+    environment:
+        # Fail the build if there are warnings
+        RUSTFLAGS: '-D warnings'
+    steps:
+      - checkout
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --
+
+      - run:
+          name: Create Lock
+          command: cargo generate-lockfile
+
+      - restore_cache:
+          keys:
+            - v1-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+
+      - run:
+          name: Build all targets
+          command: cargo build
+
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target/debug/.fingerprint
+            - target/debug/build
+            - target/debug/deps
+          key: v1-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+
+      - run:
+          name: Build all targets
+          command: cargo build
+
+      - run:
+          name: Run all tests
+          command: cargo test
+
+  format:
+    docker: # use the Docker executor
+      - image: circleci/rust
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
     steps:
       - checkout
       - run:
           name: Version information
           command: rustc --version; cargo --version; rustup --version
       - run:
-          name: Create Lock
-          command: cargo generate-lockfile
+          name: Install formatter
+          command: rustup component add rustfmt
       - run:
-          name: Build all targets
-          command: cargo build
+          name: Formatting
+          command: cargo fmt --all -- --check
+
+  lint:
+    docker: # use the Docker executor
+      - image: circleci/rust
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
+    steps:
+      - checkout
       - run:
-          name: Run all tests
-          command: cargo test
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+      - run:
+          name: Install Clippy
+          command: rustup component add clippy
+      - run:
+          name: Linting
+          command: cargo clippy -- -D warnings
+
+  audit:
+    docker: # use the Docker executor
+      - image: circleci/rust
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
+    steps:
+      - checkout
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+
+      - restore_cache:
+          keys:
+            - cargo-audit-{{ arch }}
+
+      - run:
+          name: Install dependency auditing tool
+          command: cargo install cargo-audit
+
+      - save_cache:
+          paths:
+            - /usr/local/cargo
+          key: cargo-audit-{{ arch }}
+
+      - run:
+          name: Check for known security issues in dependencies
+          command: cargo audit
+
 
 workflows:
   version: 2
   build-test:
     jobs:
       - build-and-test:
+          filters:
+            tags:
+              only: /.*/
+      - format:
+          filters:
+            tags:
+              only: /.*/
+      - lint:
+          filters:
+            tags:
+              only: /.*/
+      - audit:
           filters:
             tags:
               only: /.*/
