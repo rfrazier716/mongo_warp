@@ -21,27 +21,27 @@ async fn health_check_running() {
     assert_eq!(Some(0), response.content_length());
 }
 
-#[actix_rt::test]
-async fn db_health_check_running() {
-    //start the app and get the address
-    let addr = spawn_app();
-
-    // create a client and send a get request to the Health Check URL
-    let client = reqwest::Client::new();
-    let response = client
-        .get(format!(
-            "http://{}:{}/health_check/db",
-            addr.ip(),
-            addr.port()
-        ))
-        .send()
-        .await
-        .expect("Failed to Trigger Request");
-
-    // verify request succeeded
-    assert!(response.status().is_success());
-    assert_eq!(Some(0), response.content_length());
-}
+// #[actix_rt::test]
+// async fn db_health_check_running() {
+//     //start the app and get the address
+//     let addr = spawn_app();
+//
+//     // create a client and send a get request to the Health Check URL
+//     let client = reqwest::Client::new();
+//     let response = client
+//         .get(format!(
+//             "http://{}:{}/health_check/db",
+//             addr.ip(),
+//             addr.port()
+//         ))
+//         .send()
+//         .await
+//         .expect("Failed to Trigger Request");
+//
+//     // verify request succeeded
+//     assert!(response.status().is_success());
+//     assert_eq!(Some(0), response.content_length());
+// }
 
 fn spawn_app() -> SocketAddr {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Could not Create Listener");
