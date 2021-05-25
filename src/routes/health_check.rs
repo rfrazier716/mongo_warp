@@ -3,8 +3,11 @@ use crate::error::ServerError;
 use actix_web::{web, HttpResponse, Responder};
 use std::ops::Deref;
 use std::sync::Arc;
+use tracing::{event, instrument, Level};
 
+#[instrument]
 pub async fn health_check() -> impl Responder {
+    tracing::info!("Health Check Initialized");
     HttpResponse::Ok().finish()
 }
 

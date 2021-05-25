@@ -1,9 +1,11 @@
+use env_logger::Env;
 use std::net::TcpListener;
 use zero_to_prod::database;
 use zero_to_prod::launch_server;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     let listener = TcpListener::bind("127.0.0.1:8080")?;
     let db_config = database::DatabaseConfig {
         address: "127.0.0.1".to_string(),
