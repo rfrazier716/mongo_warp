@@ -1,8 +1,7 @@
 use actix_rt;
-use mongodb::options::{ClientOptions, Credential, ServerAddress};
-use mongodb::Client;
 use reqwest;
 use std::net::{SocketAddr, TcpListener};
+use zero_to_prod::database;
 use zero_to_prod::launch_server;
 
 #[actix_rt::test]
@@ -49,21 +48,15 @@ fn spawn_app() -> SocketAddr {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Could not Create Listener");
     let addr = listener.local_addr().expect("Could not resolve IP Address");
 
-    let credentials = Credential::builder()
-        .username("root".to_string())
-        .password("example".to_string())
-        .build();
+    let db_config = database::DatabaseConfig {
+        address: "127.0.0.1".to_string(),
+        port: 27017,
+        username: Some("root".to_string()),
+        password: Some("example".to_string()),
+    };
+    let database = database::Database::new(db_config);
 
-    let db_options = ClientOptions::builder()
-        .hosts(vec![ServerAddress::Tcp {
-            host: "127.0.0.1".into(),
-            port: Some(27017),
-        }])
-        .credential(credentials)
-        .build();
-
-    let client = Client::with_options(db_options).unwrap();
-    let server = launch_server(listener, client).expect("Failed to Launch Server");
+    let server = launch_server(listener, database).expect("Failed to Launch Server");
     let _ = tokio::spawn(server);
     addr // return teh address
 }

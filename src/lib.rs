@@ -1,16 +1,19 @@
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
-use mongodb::Client;
 use std::net::TcpListener;
 use std::sync::Arc;
 
+pub mod database;
 mod routes;
 
-pub fn launch_server(listener: TcpListener, client: Client) -> std::io::Result<Server> {
-    let client = Arc::new(client);
+pub fn launch_server(
+    listener: TcpListener,
+    database: database::Database,
+) -> std::io::Result<Server> {
+    let db = Arc::new(database);
     let server = HttpServer::new(move || {
         App::new()
-            .data(client.clone())
+            .data(db.clone())
             .route(
                 "/health_check",
                 web::get().to(routes::health_check::health_check),
