@@ -4,6 +4,7 @@ use std::net::TcpListener;
 use std::sync::Arc;
 
 pub mod database;
+pub mod error;
 mod routes;
 
 pub fn launch_server(

@@ -1,5 +1,5 @@
-use mongodb::bson::doc;
-use mongodb::options::UpdateModifications::Document;
+use mongodb::bson::{doc, Document};
+use mongodb::error::Result;
 use mongodb::options::{ClientOptions, Credential, ServerAddress};
 use mongodb::Client;
 
@@ -40,15 +40,10 @@ impl Database {
         Self { client } // Return the Client
     }
 
-    pub async fn ping(&self) -> Result<(), String> {
-        match self
-            .client
+    pub async fn ping(&self) -> Result<Document> {
+        self.client
             .database("admin")
             .run_command(doc! {"ping":1}, None)
             .await
-        {
-            Ok(_) => Ok(()),
-            Err(_) => Err("Bad".to_string()),
-        }
     }
 }
