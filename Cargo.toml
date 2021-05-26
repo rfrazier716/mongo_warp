@@ -15,9 +15,12 @@ name = "zero2prod"
 actix-web = "=4.0.0-beta.5"
 actix-http = "=3.0.0-beta.5"
 actix-service = "=2.0.0-beta.5"
+
+warp="0.3.0"
+
 actix-rt = "2.2.0"
 reqwest = "0.11.3"
-tokio = "1.6.0"
+tokio = {version="1.6.0", features=["full"]}
 mongodb = "2.0.0-beta"
 thiserror = "1.0.25"
 env_logger = "0.8.3"

@@ -6,27 +6,5 @@ use std::sync::Arc;
 
 pub mod database;
 pub mod error;
-mod routes;
-
-pub fn launch_server(
-    listener: TcpListener,
-    database: database::Database,
-) -> std::io::Result<Server> {
-    let db = Arc::new(database);
-    let server = HttpServer::new(move || {
-        App::new()
-            .wrap(Logger::default())
-            .data(db.clone())
-            .route(
-                "/health_check",
-                web::get().to(routes::health_check::health_check),
-            )
-            .route(
-                "/health_check/db",
-                web::get().to(routes::health_check::health_check_db),
-            )
-    })
-    .listen(listener)?
-    .run();
-    Ok(server)
-}
+pub mod routes;
+pub mod startup;

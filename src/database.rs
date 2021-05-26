@@ -10,6 +10,7 @@ pub struct DatabaseConfig {
     pub password: Option<String>,
 }
 
+#[derive(Clone)]
 pub struct Database {
     pub client: mongodb::Client,
 }
@@ -38,6 +39,11 @@ impl Database {
         // Get a handle to the deployment.
         let client = Client::with_options(db_options).expect("Could not Connect to Client");
         Self { client } // Return the Client
+    }
+
+    pub async fn from_uri(uri: String) -> Result<Self> {
+        let client = Client::with_uri_str(uri).await?;
+        Ok(Self { client })
     }
 
     pub async fn ping(&self) -> Result<Document> {

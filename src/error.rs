@@ -1,6 +1,7 @@
 use actix_web;
 use mongodb;
 use thiserror::Error;
+use warp::reject::Reject;
 
 #[derive(Error, Debug)]
 pub enum ServerError {
@@ -9,3 +10,4 @@ pub enum ServerError {
 }
 
 impl actix_web::error::ResponseError for ServerError {}
+impl Reject for ServerError {}

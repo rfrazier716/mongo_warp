@@ -1,19 +1,24 @@
 use env_logger::Env;
+use std::convert::Infallible;
 use std::net::TcpListener;
+use warp::http::StatusCode;
+use warp::{reject, Filter, Rejection, Reply};
 use zero_to_prod::database;
-use zero_to_prod::launch_server;
+use zero_to_prod::error;
+use zero_to_prod::routes;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    let listener = TcpListener::bind("127.0.0.1:8080")?;
-    let db_config = database::DatabaseConfig {
-        address: "127.0.0.1".to_string(),
-        port: 27017,
-        username: Some("root".to_string()),
-        password: Some("example".to_string()),
-    };
-    let database = database::Database::new(db_config);
+#[tokio::main]
+async fn main() {
+    let listener = TcpListener::bind("127.0.0.1:8080").expect("Could Not Bind Port");
+    let address = listener
+        .local_addr()
+        .expect("Could not get Address of Listener");
+    let uri = "mongodb://root:example@localhost:27017".to_string();
 
-    launch_server(listener, database)?.await // start the server as an async function
+    let database = database::Database::from_uri(uri)
+        .await
+        .expect("Could not Initialize Database Client");
+
+    // Start the Server
+    zero_to_prod::startup::run(listener, database).await;
 }
