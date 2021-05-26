@@ -30,7 +30,7 @@ impl Database {
         // Fill out the rest of the connection options
         let db_options = ClientOptions::builder()
             .hosts(vec![ServerAddress::Tcp {
-                host: config.address.into(),
+                host: config.address,
                 port: Some(config.port),
             }])
             .credential(credentials)
