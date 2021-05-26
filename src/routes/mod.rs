@@ -2,7 +2,7 @@ use crate::database;
 use crate::error;
 use std::convert::Infallible;
 use warp::http::StatusCode;
-use warp::{reject, Filter, Rejection, Reply};
+use warp::{Filter, Rejection, Reply};
 
 pub mod health_check;
 

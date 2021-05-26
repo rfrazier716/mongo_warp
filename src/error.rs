@@ -1,4 +1,3 @@
-use actix_web;
 use mongodb;
 use thiserror::Error;
 use warp::reject::Reject;
@@ -9,5 +8,4 @@ pub enum ServerError {
     DataBaseError { source: mongodb::error::Error },
 }
 
-impl actix_web::error::ResponseError for ServerError {}
 impl Reject for ServerError {}
