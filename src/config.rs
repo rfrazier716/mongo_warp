@@ -12,6 +12,11 @@ pub struct DatabaseSettings {
     pub port: u16,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LoggerSettings {
+    pub rules: Vec<String>,
+}
+
 impl DatabaseSettings {
     pub fn connection_str(&self) -> String {
         format!(
@@ -24,6 +29,7 @@ impl DatabaseSettings {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Settings {
     pub database: DatabaseSettings,
+    pub log: Vec<String>,
     pub application_port: u16,
 }
 
@@ -56,6 +62,8 @@ database:
     password: example
     host: localhost
     port: 27017
+log:
+    - info
 "#;
 
     const TEST_CONFIG_NO_USERNAME: &str = r#"
@@ -65,6 +73,9 @@ database:
     password: example
     host: localhost
     port: 27017
+log: 
+    - info
+    - onfo
 "#;
 
     #[test]

@@ -1,23 +1,15 @@
-use crate::{config, database, routes};
+use crate::{config, database, error, routes};
 use warp::Filter;
 
-pub fn run(settings: config::Settings) -> impl warp::Future {
+// Run is in its own function so it can be started as a separate task for Integration Tests
+pub fn run(settings: config::Settings) -> Result<impl warp::Future, error::ServerError> {
     // Create a Database Connection from the URI
-    let database =
-        database::Database::new(settings.database).expect("Could not Initialize Database Client");
-
-    // Create the Health Check route
-    let health = warp::path!("health")
-        .and(routes::with_db(database))
-        .and_then(routes::health_check::health_handler)
-        .with(warp::trace(|info| {
-            // Construct our own custom span for this route.
-            tracing::info_span!("Health Check", req.path = ?info.path())
-        }));
+    let database = database::Database::new(settings.database)
+        .map_err(|e| error::ServerError::DataBaseError { source: e })?;
 
     // Add all our routes
-    let routes = health.with(warp::trace::request());
+    let routes = routes::routes(database).with(warp::trace::request());
 
     //Generate a future for the server
-    warp::serve(routes).run(([127, 0, 0, 1], settings.application_port))
+    Ok(warp::serve(routes).run(([127, 0, 0, 1], settings.application_port)))
 }

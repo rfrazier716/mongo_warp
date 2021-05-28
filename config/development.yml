@@ -5,3 +5,6 @@ database:
   password: example
   host: localhost
   port: 27017
+
+log:
+  - info

@@ -1,1 +1,10 @@
 application_port: 3030
+
+database:
+  username: root
+  password: example
+  host: localhost
+  port: 27017
+
+log:
+  - info
