@@ -1,10 +1,10 @@
 use tracing_subscriber::fmt::format::FmtSpan;
-use zero_to_prod::{config, database, startup};
+use zero_to_prod::{config, startup};
 
 #[tokio::main]
 async fn main() {
     // load the config
-    let server_config = config::get_config().expect("Could not Load Configuration File");
+    let server_config = config::Settings::new().expect("Could not Load Server Configuration");
 
     // Filter traces based on the RUST_LOG env var
     let filter = std::env::var("RUST_LOG")
@@ -21,11 +21,6 @@ async fn main() {
         .with_span_events(FmtSpan::CLOSE)
         .init(); // initialize the subscriber
 
-    // Create a Database Connection from the URI
-    let database = database::Database::from_uri(server_config.database.connection_str())
-        .await
-        .expect("Could not Initialize Database Client");
-
     // Start the Server
-    startup::run(server_config.application_port, database).await;
+    startup::run(server_config).await;
 }

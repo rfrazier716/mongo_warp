@@ -1,7 +1,11 @@
-use crate::{database, routes};
+use crate::{config, database, routes};
 use warp::Filter;
 
-pub fn run(port: u16, database: database::Database) -> impl warp::Future {
+pub fn run(settings: config::Settings) -> impl warp::Future {
+    // Create a Database Connection from the URI
+    let database =
+        database::Database::new(settings.database).expect("Could not Initialize Database Client");
+
     // Create the Health Check route
     let health = warp::path!("health")
         .and(routes::with_db(database))
@@ -15,5 +19,5 @@ pub fn run(port: u16, database: database::Database) -> impl warp::Future {
     let routes = health.with(warp::trace::request());
 
     //Generate a future for the server
-    warp::serve(routes).run(([127, 0, 0, 1], port))
+    warp::serve(routes).run(([127, 0, 0, 1], settings.application_port))
 }

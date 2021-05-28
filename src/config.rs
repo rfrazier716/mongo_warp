@@ -1,29 +1,15 @@
-use confy;
+use config::{Config, ConfigError, Environment, File};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub struct Settings {
-    pub database: DatabaseSettings,
-    pub application_port: u16,
-}
+const DEFAULT_CONFIG_PATH: &str = "./config/default.yml";
+const CONFIG_FILE_PREFIX: &str = "./config/";
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: String,
     pub host: String,
     pub port: u16,
-}
-
-impl std::default::Default for DatabaseSettings {
-    fn default() -> Self {
-        Self {
-            username: String::from("root"),
-            password: String::from("example"),
-            host: String::from("localhost"),
-            port: 27017,
-        }
-    }
 }
 
 impl DatabaseSettings {
@@ -35,15 +21,86 @@ impl DatabaseSettings {
     }
 }
 
-impl std::default::Default for Settings {
-    fn default() -> Self {
-        Self {
-            application_port: 3030,
-            database: DatabaseSettings::default(),
-        }
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Settings {
+    pub database: DatabaseSettings,
+    pub application_port: u16,
+}
+
+impl Settings {
+    pub fn new() -> Result<Self, ConfigError> {
+        // Figure out what config to load based on environment Variables
+        // Use Development by Default
+        let env = std::env::var("RUN_ENV").unwrap_or_else(|_| String::from("development"));
+        let mut settings = Config::new(); // Create a new config
+
+        settings.merge(File::with_name(DEFAULT_CONFIG_PATH))?; // Merge Default Settings
+        settings.merge(File::with_name(&format!("{}{}", CONFIG_FILE_PREFIX, env)))?; //merge the specific environment settings
+
+        // Get database login information from the Environment
+        // These Env Variables should be EA_DATABASE__USERNAME and EA_DATABASE__PASSWORD
+        settings.merge(Environment::with_prefix("ea").separator("__"))?;
+        settings.try_into()
     }
 }
 
-pub fn get_config() -> Result<Settings, confy::ConfyError> {
-    confy::load("server.yaml")
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::env;
+
+    const TEST_CONFIG: &str = r#"
+application_port: 3030
+database:
+    username: root
+    password: example
+    host: localhost
+    port: 27017
+"#;
+
+    const TEST_CONFIG_NO_USERNAME: &str = r#"
+application_port: 3030
+database:
+    username: root
+    password: example
+    host: localhost
+    port: 27017
+"#;
+
+    #[test]
+    fn test_loading_config_string() {
+        let mut s = Config::new();
+        s.merge(File::from_str(TEST_CONFIG, config::FileFormat::Yaml))
+            .unwrap();
+        s.try_into::<Settings>().unwrap(); //panic if we cannot convert it
+    }
+
+    #[test]
+    fn test_overwriting_nested_values() {
+        // set the environment variable for the database username
+        env::set_var("EA_DATABASE__USERNAME", "changed");
+        let mut s = Config::new();
+        s.merge(File::from_str(TEST_CONFIG, config::FileFormat::Yaml))
+            .unwrap();
+        s.merge(Environment::with_prefix("ea").separator("__"))
+            .unwrap();
+        let config: Settings = s.try_into().unwrap();
+        assert_eq!(config.database.username, "changed");
+    }
+
+    #[test]
+    fn test_creating_with_missing_fields() {
+        // set the environment variable for the database username
+        env::set_var("EA_DATABASE__USERNAME", "changed");
+        let mut s = Config::new();
+        s.merge(File::from_str(
+            TEST_CONFIG_NO_USERNAME,
+            config::FileFormat::Yaml,
+        ))
+        .unwrap();
+        s.merge(Environment::with_prefix("ea").separator("__"))
+            .unwrap();
+        let config: Settings = s.try_into().unwrap();
+        assert_eq!(config.database.username, "changed");
+    }
 }
