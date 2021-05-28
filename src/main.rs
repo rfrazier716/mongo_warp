@@ -1,9 +1,11 @@
 use tracing_subscriber::fmt::format::FmtSpan;
-use zero_to_prod::database;
-use zero_to_prod::startup;
+use zero_to_prod::{config, database, startup};
 
 #[tokio::main]
 async fn main() {
+    // load the config
+    let server_config = config::get_config().expect("Could not Load Configuration File");
+
     // Filter traces based on the RUST_LOG env var
     let filter = std::env::var("RUST_LOG")
         .unwrap_or_else(|_| "tracing=info,warp=debug,zero_to_prod=info".to_owned());
@@ -19,14 +21,11 @@ async fn main() {
         .with_span_events(FmtSpan::CLOSE)
         .init(); // initialize the subscriber
 
-    // MongoDB URI String
-    let uri = "mongodb://root:example@localhost:27017".to_string();
-
     // Create a Database Connection from the URI
-    let database = database::Database::from_uri(uri)
+    let database = database::Database::from_uri(server_config.database.connection_str())
         .await
         .expect("Could not Initialize Database Client");
 
     // Start the Server
-    startup::run(database).await;
+    startup::run(server_config.application_port, database).await;
 }
