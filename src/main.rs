@@ -17,7 +17,7 @@ async fn main() {
         .init(); // initialize the subscriber
 
     // Start the Server
-    startup::run(server_config)
-        .expect("Could not Launch Server")
-        .await;
+    let (address, server) = startup::run(server_config).expect("Could not Initialize Server");
+    println!("Spawning Server on Address: {:?}", address);
+    server.await;
 }
