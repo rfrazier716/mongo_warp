@@ -1,4 +1,5 @@
-use config::{Config, ConfigError, Environment, File};
+use crate::error::{Result, ServerError};
+use config::{Config, Environment, File};
 use serde::{Deserialize, Serialize};
 
 const DEFAULT_CONFIG_PATH: &str = "./config/default.yml";
@@ -34,19 +35,28 @@ pub struct Settings {
 }
 
 impl Settings {
-    pub fn new() -> Result<Self, ConfigError> {
+    pub fn new() -> Result<Self> {
         // Figure out what config to load based on environment Variables
         // Use Development by Default
         let env = std::env::var("RUN_ENV").unwrap_or_else(|_| String::from("development"));
         let mut settings = Config::new(); // Create a new config
 
-        settings.merge(File::with_name(DEFAULT_CONFIG_PATH))?; // Merge Default Settings
-        settings.merge(File::with_name(&format!("{}{}", CONFIG_FILE_PREFIX, env)))?; //merge the specific environment settings
+        settings
+            .merge(File::with_name(DEFAULT_CONFIG_PATH))
+            .map_err(|source| ServerError::ConfigurationError { source })?; // Merge Default Settings
+        settings
+            .merge(File::with_name(&format!("{}{}", CONFIG_FILE_PREFIX, env)))
+            .map_err(|source| ServerError::ConfigurationError { source })?; //merge the specific environment settings
 
         // Get database login information from the Environment
         // These Env Variables should be EA_DATABASE__USERNAME and EA_DATABASE__PASSWORD
-        settings.merge(Environment::with_prefix("ea").separator("__"))?;
-        settings.try_into()
+        settings
+            .merge(Environment::with_prefix("ea").separator("__"))
+            .map_err(|source| ServerError::ConfigurationError { source })?;
+
+        settings
+            .try_into()
+            .map_err(|source| ServerError::ConfigurationError { source })
     }
 }
 
