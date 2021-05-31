@@ -4,6 +4,7 @@ use zero_to_prod::{config, startup};
 #[tokio::main]
 async fn main() {
     // load the config
+    println!("Spawning Server");
     let server_config = config::Settings::new().expect("Could not Load Server Configuration");
 
     // Load the Trace filter settings from the Configuration
@@ -18,6 +19,6 @@ async fn main() {
 
     // Start the Server
     let (address, server) = startup::run(server_config).expect("Could not Initialize Server");
-    println!("Spawning Server on Address: {:?}", address);
+    println!("Server running on Address: {:?}", address);
     server.await;
 }
