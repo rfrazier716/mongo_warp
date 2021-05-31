@@ -8,9 +8,20 @@ jobs:
         auth:
           username: rfrazier716
           password: $DOCKER_API_KEY
+      - image: circleci/mongo:4.4
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+
     environment:
         # Fail the build if there are warnings
         RUSTFLAGS: '-D warnings'
+        # Set the Test environment configuration
+        RUN_ENV: 'test'
+        
     steps:
       - checkout
       - run:
