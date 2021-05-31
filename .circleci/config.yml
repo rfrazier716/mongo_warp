@@ -2,7 +2,61 @@
 version: 2.1
 
 jobs:
-  build-and-test:
+  build-lint-and-test:
+    docker: # use the Docker executor
+      - image: circleci/rust
+        auth:
+          username: rfrazier716
+          password: $DOCKER_API_KEY
+
+    environment:
+        # Fail the build if there are warnings
+        RUSTFLAGS: '-D warnings'
+        
+    steps:
+      - checkout
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+
+      - run:
+          name: Create Lock
+          command: cargo generate-lockfile
+
+      - restore_cache:
+          keys:
+            - cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+
+      - run:
+          name: Build all targets
+          command: cargo build
+
+      - run:
+          name: Install Clippy
+          command: rustup component add clippy
+
+      - run:
+          name: Lint Source
+          command: cargo clippy -- -D warnings
+
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target/debug/.fingerprint
+            - target/debug/build
+            - target/debug/deps
+          key: cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+      
+      - run:
+          name: Run unit tests
+          command: cargo test --lib
+
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - Cargo.lock
+
+  integration-tests:
     docker: # use the Docker executor
       - image: circleci/rust
         auth:
@@ -19,40 +73,25 @@ jobs:
     environment:
         # Fail the build if there are warnings
         RUSTFLAGS: '-D warnings'
-        # Set the Test environment configuration
-        RUN_ENV: 'test'
-        
+
     steps:
       - checkout
       - run:
-          name: Version information
+          name: Version Information
           command: rustc --version; cargo --version; rustup --version
 
-      - run:
-          name: Create Lock
-          command: cargo generate-lockfile
+      - attach_workspace:
+          at: ./
 
       - restore_cache:
           keys:
-            - v1-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+            - cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
 
       - run:
-          name: Build all targets
+          name: Built all targets
           command: cargo build
-
-      - save_cache:
-          paths:
-            - /usr/local/cargo/registry
-            - target/debug/.fingerprint
-            - target/debug/build
-            - target/debug/deps
-          key: v1-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
-
-      - run:
-          name: Build all targets
-          command: cargo build
-
-      - run:
+      
+      - run: 
           name: Run all tests
           command: cargo test
 
@@ -73,24 +112,6 @@ jobs:
       - run:
           name: Formatting
           command: cargo fmt --all -- --check
-
-  lint:
-    docker: # use the Docker executor
-      - image: circleci/rust
-        auth:
-          username: rfrazier716
-          password: $DOCKER_API_KEY
-    steps:
-      - checkout
-      - run:
-          name: Version information
-          command: rustc --version; cargo --version; rustup --version
-      - run:
-          name: Install Clippy
-          command: rustup component add clippy
-      - run:
-          name: Linting
-          command: cargo clippy -- -D warnings
 
   audit:
     docker: # use the Docker executor
@@ -127,15 +148,18 @@ workflows:
   version: 2
   build-test:
     jobs:
-      - build-and-test:
+      - build-lint-and-test:
           filters:
             tags:
               only: /.*/
+      - integration-tests:
+        # Integration tests should only run on main and development commits
+          requires:
+            - build-lint-and-test
+          filters:
+            branches:
+              only: /^(main|development)$/  
       - format:
-          filters:
-            tags:
-              only: /.*/
-      - lint:
           filters:
             tags:
               only: /.*/
