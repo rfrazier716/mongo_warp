@@ -9,7 +9,7 @@ pub async fn run(
     settings: config::Settings,
 ) -> Result<(SocketAddr, impl Future<Output = ()> + 'static), error::ServerError> {
     // Create a Database Connection from the URI
-    let client = db::Client::with_uri_str("mongodb://root:example@localhost:27017")
+    let client = db::Client::with_uri_str(settings.database.uri)
         .await
         .map_err(|source| error::ServerError::DataBaseError { source })?;
 
@@ -26,7 +26,7 @@ pub async fn run(
     Ok(
         warp::serve(routes).bind_with_graceful_shutdown(socket, async {
             match signal::ctrl_c().await {
-                Ok(_) => println!("Shutting Down Server"),
+                Ok(_) => println!("💀 Shutting Down Server"),
                 Err(_) => println!("Error handling SIGINT"),
             }
         }),

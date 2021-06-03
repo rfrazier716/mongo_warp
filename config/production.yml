@@ -1,5 +1,1 @@
 application_port: 3030
-
-database:
-  host: localhost
-  port: 27017

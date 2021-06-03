@@ -1,7 +1,5 @@
-use crate::config::DatabaseSettings;
 use mongodb::bson::{doc, Document};
 use mongodb::error::Result;
-use mongodb::options::{ClientOptions, Credential, ServerAddress};
 
 pub(crate) type Client = mongodb::Client;
 
