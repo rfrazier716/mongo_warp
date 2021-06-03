@@ -9,7 +9,7 @@ pub async fn run(
     settings: config::Settings,
 ) -> Result<(SocketAddr, impl Future<Output = ()> + 'static), error::ServerError> {
     // Create a Database Connection from the URI
-    let client = db::create_client("mongodb://root:example@localhost:27017")
+    let client = db::Client::with_uri_str("mongodb://root:example@localhost:27017")
         .await
         .map_err(|source| error::ServerError::DataBaseError { source })?;
 
