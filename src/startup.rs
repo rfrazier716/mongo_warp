@@ -1,19 +1,20 @@
-use crate::{config, database, error, routes};
+use crate::{config, db, error, routes};
 use std::future::Future;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::signal;
 use warp::Filter;
 
 // Run is in its own function so it can be started as a separate task for Integration Tests
-pub fn run(
+pub async fn run(
     settings: config::Settings,
 ) -> Result<(SocketAddr, impl Future<Output = ()> + 'static), error::ServerError> {
     // Create a Database Connection from the URI
-    let database = database::Database::new(settings.database)
-        .map_err(|e| error::ServerError::DataBaseError { source: e })?;
+    let client = db::create_client("mongodb://root:example@localhost:27017")
+        .await
+        .map_err(|source| error::ServerError::DataBaseError { source })?;
 
     // Add all our routes
-    let routes = routes::routes(database).with(warp::trace::request());
+    let routes = routes::routes(client).with(warp::trace::request());
 
     // Create a Socket to bind the server to
     let socket = SocketAddr::new(

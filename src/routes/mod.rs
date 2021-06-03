@@ -1,4 +1,4 @@
-use crate::database;
+use crate::db;
 use crate::error;
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -7,13 +7,13 @@ use warp::{Filter, Rejection, Reply};
 pub mod health;
 
 pub fn routes(
-    db: database::Database,
+    client: db::Client,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    health::health_routes(db)
+    health::health_routes(client)
 }
 
 pub fn with_db(
-    db: database::Database,
-) -> impl Filter<Extract = (database::Database,), Error = Infallible> + Clone {
-    warp::any().map(move || db.clone())
+    client: db::Client,
+) -> impl Filter<Extract = (db::Client,), Error = Infallible> + Clone {
+    warp::any().map(move || client.clone())
 }

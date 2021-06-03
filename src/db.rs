@@ -2,11 +2,23 @@ use crate::config::DatabaseSettings;
 use mongodb::bson::{doc, Document};
 use mongodb::error::Result;
 use mongodb::options::{ClientOptions, Credential, ServerAddress};
-use mongodb::Client;
+
+pub(crate) type Client = mongodb::Client;
 
 #[derive(Clone)]
 pub struct Database {
     pub client: mongodb::Client,
+}
+
+pub async fn create_client(uri: &str) -> Result<Client> {
+    mongodb::Client::with_uri_str(uri).await
+}
+
+pub async fn ping(client: &Client) -> Result<Document> {
+    client
+        .database("admin")
+        .run_command(doc! {"ping":1}, None)
+        .await
 }
 
 impl Database {
