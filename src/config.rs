@@ -1,4 +1,4 @@
-use crate::error::{Result, ServerError};
+use crate::error::{Result, Error::ConfigurationError};
 use config::{Config, Environment, File};
 use serde::{Deserialize, Serialize};
 
@@ -31,20 +31,20 @@ impl Settings {
 
         settings
             .merge(File::with_name(DEFAULT_CONFIG_PATH))
-            .map_err(|source| ServerError::ConfigurationError { source })?; // Merge Default Settings
+            .map_err(ConfigurationError)?; // Merge Default Settings
         settings
             .merge(File::with_name(&format!("{}{}", CONFIG_FILE_PREFIX, env)))
-            .map_err(|source| ServerError::ConfigurationError { source })?; //merge the specific environment settings
+            .map_err(ConfigurationError)?; //merge the specific environment settings
 
         // Get database login information from the Environment
         // These Env Variables should be EA_DATABASE__URI
         settings
             .merge(Environment::with_prefix("ea").separator("__"))
-            .map_err(|source| ServerError::ConfigurationError { source })?;
+            .map_err(ConfigurationError)?;
 
         settings
             .try_into()
-            .map_err(|source| ServerError::ConfigurationError { source })
+            .map_err(ConfigurationError)
     }
 }
 

@@ -1,5 +1,5 @@
 use mongodb::bson::{doc, Document};
-use mongodb::error::Result;
+use crate::error::{Result, Error::MongoQueryError};
 
 pub(crate) type Client = mongodb::Client;
 
@@ -8,4 +8,5 @@ pub async fn ping(client: &Client) -> Result<Document> {
         .database("admin")
         .run_command(doc! {"ping":1}, None)
         .await
+        .map_err(MongoQueryError)
 }

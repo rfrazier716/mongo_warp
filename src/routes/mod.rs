@@ -1,5 +1,4 @@
 use crate::db;
-use crate::error;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::{Filter, Rejection, Reply};
