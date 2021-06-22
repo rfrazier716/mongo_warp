@@ -1,5 +1,5 @@
+use crate::error::{Error::MongoQueryError, Result};
 use mongodb::bson::{doc, Document};
-use crate::error::{Result, Error::MongoQueryError};
 
 pub(crate) type Client = mongodb::Client;
 

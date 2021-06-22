@@ -1,4 +1,4 @@
-use crate::error::{Result, Error::ConfigurationError};
+use crate::error::{Error::ConfigurationError, Result};
 use config::{Config, Environment, File};
 use serde::{Deserialize, Serialize};
 
@@ -42,9 +42,7 @@ impl Settings {
             .merge(Environment::with_prefix("ea").separator("__"))
             .map_err(ConfigurationError)?;
 
-        settings
-            .try_into()
-            .map_err(ConfigurationError)
+        settings.try_into().map_err(ConfigurationError)
     }
 }
 

@@ -1,4 +1,8 @@
-use crate::{config, db, error::{Error, Result}, routes};
+use crate::{
+    config, db,
+    error::{Error, Result},
+    routes,
+};
 use std::future::Future;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::signal;
@@ -10,7 +14,8 @@ pub async fn run(
 ) -> Result<(SocketAddr, impl Future<Output = ()> + 'static)> {
     // Create a Database Connection from the URI
     let client = db::Client::with_uri_str(settings.database.uri)
-        .await.map_err(Error::ClientInitError)?;
+        .await
+        .map_err(Error::ClientInitError)?;
 
     // Add all our routes
     let routes = routes::routes(client).with(warp::trace::request());

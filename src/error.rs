@@ -3,7 +3,6 @@ use warp::reject::Reject;
 
 #[derive(Error, Debug)]
 pub enum Error {
-
     #[error("Could not initialized Database client from URI: {0}")]
     ClientInitError(mongodb::error::Error),
 

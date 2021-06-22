@@ -1,5 +1,5 @@
-use tracing_subscriber::fmt::format::FmtSpan;
 use mongo_warp::{config, startup};
+use tracing_subscriber::fmt::format::FmtSpan;
 
 #[tokio::main]
 async fn main() {

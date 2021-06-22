@@ -23,8 +23,7 @@ pub fn health_check_route() -> BoxedFilter<()> {
 
 pub async fn health_handler(client: db::Client) -> Result<impl Reply, Rejection> {
     tracing::info!("Pinging Database");
-    db::ping(&client)
-        .await?;
+    db::ping(&client).await?;
     Ok(StatusCode::OK)
 }
 
