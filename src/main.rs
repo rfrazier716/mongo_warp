@@ -1,5 +1,5 @@
 use tracing_subscriber::fmt::format::FmtSpan;
-use zero_to_prod::{config, startup};
+use {{crate_name}}::{config, startup};
 
 #[tokio::main]
 async fn main() {

@@ -1,16 +1,9 @@
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the zero_to_prod and create a pull request
+*** that would make this better, please fork the repo and create a pull request
 *** or simply open an issue with the tag "enhancement".
 *** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** rfrazier716, zero_to_prod, twitter_handle, email, Zero To Production, project_description
 -->
-
-
 
 <!-- PROJECT SHIELDS -->
 <!--
@@ -25,31 +18,29 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+{% if linkedin_shield %}[![LinkedIn][linkedin-shield]][linkedin-url]{% endif %}
 
 
 
 <!-- PROJECT LOGO -->
 <br />
-<p align="center">
-  <a href="https://github.com/rfrazier716/zero_to_prod">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+<div align="center">
+  <a href="https://github.com/{{github_username}}/{{repo_name}}">
+    <img src="https://rustacean.net/assets/rustacean-flat-happy.svg" alt="Logo" width="200">
   </a>
 
-<h3 align="center">An Async Warp Webserver Template With MongoDB Connection</h3>
+<h1 align="center">{{project-name}}</h1>
 
   <p align="center">
-    project_description
+    Project Description
     <br />
-    <a href="https://github.com/rfrazier716/zero_to_prod"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/rfrazier716/zero_to_prod">View Demo</a>
+    <a href="https://github.com/{{github_username}}/{{repo_name}}">View Demo</a>
     ·
-    <a href="https://github.com/rfrazier716/zero_to_prod/issues">zero_to_prodrt Bug</a>
+    <a href="https://github.com/{{github_username}}/{{repo_name}}/issues">Report a Bug</a>
     ·
-    <a href="https://github.com/rfrazier716/zero_to_prod/issues">Request Feature</a>
+    <a href="https://github.com/{{github_username}}/{{repo_name}}/issues">Request Feature</a>
   </p>
-</p>
+</div>
 
 
 
@@ -87,9 +78,6 @@
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`rfrazier716`, `zero_to_prod`, `twitter_handle`, `email`, `Zero To Production`, `project_description`
-
 
 ### Built With
 
@@ -114,9 +102,9 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Clone the zero_to_prod
+1. Clone the repo
    ```sh
-   git clone https://github.com/rfrazier716/zero_to_prod.git
+   git clone https://github.com/{{github_username}}/{{repo_name}}.git
    ```
 2. Install NPM packages
    ```sh
@@ -137,7 +125,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/rfrazier716/zero_to_prod/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/{{github_username}}/{{repo_name}}/issues) for a list of proposed features (and known issues).
 
 
 
@@ -156,23 +144,25 @@ Contributions are what make the open source community such an amazing place to b
 
 <!-- LICENSE -->
 ## License
-Todo!
+
+Distributed under the Apache 2.0 License. See `LICENSE` for more information.
+
 
 
 <!-- CONTACT -->
 ## Contact
 
-Ryan Frazier - [@fotonixandgizmo](https://twitter.com/fotonixandgizmo) - Ryan@Fotonixx.com
+Your Name - {{authors}}
 
-Project Link: [https://github.com/rfrazier716/zero_to_prod](https://github.com/rfrazier716/zero_to_prod)
+Project Link: [https://github.com/{{github_username}}/{{repo_name}}](https://github.com/{{github_username}}/{{repo_name}})
 
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
+* [mongo-warp Webserver Template](https://github.com/rfrazier716/mongo_warp)
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 * []()
 
 
@@ -181,13 +171,17 @@ Project Link: [https://github.com/rfrazier716/zero_to_prod](https://github.com/r
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/rfrazier716/zero_to_prod.svg?style=for-the-badge
-[contributors-url]: https://github.com/rfrazier716/zero_to_prod/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/rfrazier716/zero_to_prod.svg?style=for-the-badge
-[forks-url]: https://github.com/rfrazier716/zero_to_prod/network/members
-[stars-shield]: https://img.shields.io/github/stars/rfrazier716/zero_to_prod.svg?style=for-the-badge
-[stars-url]: https://github.com/rfrazier716/zero_to_prod/stargazers
-[issues-shield]: https://img.shields.io/github/issues/rfrazier716/zero_to_prod.svg?style=for-the-badge
-[issues-url]: https://github.com/rfrazier716/zero_to_prod/issues
-[license-shield]: https://img.shields.io/github/license/rfrazier716/zero_to_prod.svg?style=for-the-badge
-[license-url]: https://github.com/rfrazier716/zero_to_prod/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/{{github_username}}/{{repo_name}}.svg?style=for-the-badge
+[contributors-url]: https://github.com/{{github_username}}/{{repo_name}}/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/{{github_username}}/{{repo_name}}.svg?style=for-the-badge
+[forks-url]: https://github.com/{{github_username}}/{{repo_name}}/network/members
+[stars-shield]: https://img.shields.io/github/stars/{{github_username}}/{{repo_name}}.svg?style=for-the-badge
+[stars-url]: https://github.com/{{github_username}}/{{repo_name}}/stargazers
+[issues-shield]: https://img.shields.io/github/issues/{{github_username}}/{{repo_name}}.svg?style=for-the-badge
+[issues-url]: https://github.com/{{github_username}}/{{repo_name}}/issues
+[license-shield]: https://img.shields.io/github/license/{{github_username}}/{{repo_name}}.svg?style=for-the-badge
+[license-url]: https://github.com/{{github_username}}/{{repo_name}}/blob/master/LICENSE.txt
+{% if linkedin_shield %}
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/{{github_username}}
+{% endif %}

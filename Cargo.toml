@@ -1,7 +1,7 @@
 [package]
-name = "zero_to_prod"
+name = "{{project-name}}"
 version = "0.1.0"
-authors = ["RyanFrazier <rfrazier716@gmail.com>"]
+authors = ["{{authors}}"]
 edition = "2018"
 
 [lib]
@@ -9,7 +9,7 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "zero2prod"
+name = "{{project-name}}"
 
 [dependencies]
 # The Framework we'll be using

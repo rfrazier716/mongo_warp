@@ -1,0 +1,22 @@
+[template]
+include = [
+    "Cargo.toml",
+    "README.md",
+    "src/main.rs",
+    "tests/common/mod.rs"
+    ]
+
+[placeholders.repo_name]
+type = "string"
+prompt = "What is the name of the repository (Used to generate README links)"
+default = "repo_name"
+
+[placeholders.github_username]
+type = "string"
+prompt = "What is your github username (Used to generate README links)"
+default = "github_username"
+
+[placeholders.linkedin_shield]
+type = "bool"
+prompt = "Add a LinkedIn Shield to the ReadMe? (will default to https://linkedin.com/in/github_username)"
+default = false
