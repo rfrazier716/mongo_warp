@@ -1,5 +1,5 @@
 [package]
-name = "zero_to_prod"
+name = "mongo_warp"
 version = "0.1.0"
 authors = ["RyanFrazier <rfrazier716@gmail.com>"]
 edition = "2018"
@@ -9,7 +9,7 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "zero2prod"
+name = "mongo_warp"
 
 [dependencies]
 # The Framework we'll be using
