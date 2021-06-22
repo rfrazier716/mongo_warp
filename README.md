@@ -40,12 +40,9 @@
   <p align="center">
     An Async Warp Webserver Template With MongoDB Connection
     <br />
-    <a href="https://github.com/rfrazier716/mongo_warp"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/rfrazier716/mongo_warp">View Demo</a>
+    <a href="https://github.com/rfrazier716/warp_crud">View Demo</a>
     ·
-    <a href="https://github.com/rfrazier716/mongo_warp/issues">mongo_warprt Bug</a>
+    <a href="https://github.com/rfrazier716/mongo_warp/issues">Report Bug</a>
     ·
     <a href="https://github.com/rfrazier716/mongo_warp/issues">Request Feature</a>
   </p>
@@ -59,9 +56,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -126,8 +120,8 @@ It's assumed you already have Rust installed on your computer as well as cargo, 
     * `github username`: Is used to generate shields and hyperlinks in the readme
     * `repository name`: Is used to generate shields and hyperlinks in the readme
     * `LinkedIn Shield`: If set to true, a LinkedIn shield will be included at the top of the repository, otherwise ignored.
-    
-<!-- USAGE EXAMPLES -->
+
+## Usage
 This repository is a template to get you up and running with a Rust Webserver faster. For that reason it only includes a basic `/health`
 route that pings the MongoDB instance. To add additional routes and endpoints see the documentation for [Warp](https://docs.rs/warp/0.3.1/warp/) and [MongoDB](https://github.com/mongodb/mongo-rust-driver).
 
